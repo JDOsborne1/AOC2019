@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![Travis build
+status](https://travis-ci.org/JDOsborne1/AOC2019.svg?branch=master)](https://travis-ci.org/JDOsborne1/AOC2019)
 <!-- badges: end -->
 
 The goal of AOC2019 is to contain all the code and functions used to
