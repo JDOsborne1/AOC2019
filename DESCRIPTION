@@ -1,16 +1,22 @@
 Package: AOC2019
 Type: Package
-Title: What the Package Does (Title Case)
+Title: AOC challenge 2019
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Joseph Osborne 
+Maintainer: Joseph Osborne <theosborne@outlook.com>
+Description: Storage of Code, tests and datasets for the Advent of Code Challenge 2019.
+    Should maintain a completely reproducible accounting of the answers to the challenge.
+License: Apache License (>= 2.0)
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 2.10)
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+RoxygenNote: 6.1.1
+Imports: 
+    dplyr,
+    tidyr,
+    purrr
