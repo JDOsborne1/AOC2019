@@ -13,7 +13,8 @@ Depends: R (>= 2.10)
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
 Imports: 
