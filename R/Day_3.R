@@ -109,13 +109,13 @@ day3GetPathFromString <- function(input_string){
 #' @export
 #'
 #' @examples
-day3DetermineCrossing <- function(input_string_1, input_string_2){
+day3DetermineCrossing <- function(input_string1, input_string2){
 
 
-        input_path_1 <- input_string_1 %>%
+        input_path_1 <- input_string1 %>%
                 day3GetPathFromString() %>%
                 mutate(str.value = as.character(value))
-        input_path_2 <- input_string_2 %>%
+        input_path_2 <- input_string2 %>%
                 day3GetPathFromString() %>%
                 mutate(str.value = as.character(value))
 
@@ -161,9 +161,69 @@ day3DetermineClosestCrossover <- function(input_string1, input_string2, vect_ref
         day3DetermineCrossing(input_string1, input_string2) %>%
                 mutate(distance = purrr::map(value, day3ManhattanDistance, vect_reference = vect_reference)) %>%
                 select(-value) %>%
-                tidyr::unnest(cols = distance) %>%
+                #tidyr::unnest(cols = distance) %>%
+                tidyr::unnest() %>%
                 filter(distance == min(distance)) %>%
                 pull(distance) %>%
                 as.integer()
 }
 
+
+
+# Taking two paths and getting the path length to each crossing -----------
+
+
+#' Determine the crossing points of two instruction strings
+#'
+#' @param input_string_1 the first instruction string
+#' @param input_string_2 the second instruction string
+#'
+#' @return
+#' @export
+#'
+#' @examples
+day3DetermineShortestPath <- function(input_string_1, input_string_2){
+        input_path_1 <- input_string_1 %>%
+                day3GetPathFromString() %>%
+                mutate(str.value = as.character(value))
+        input_path_2 <- input_string_2 %>%
+                day3GetPathFromString() %>%
+                mutate(str.value = as.character(value))
+
+        intersections <- input_path_1 %>%
+                select(-value) %>%
+                inner_join(input_path_2, by = "str.value") %>%
+                filter(str.value != "c(0, 0)")
+
+
+        path_lengths_1 <- input_path_1 %>%
+                select(-value) %>%
+                tibble::rownames_to_column() %>%
+                filter(str.value %in% intersections$str.value) %>%
+                mutate_at(vars(rowname), as.integer) %>%
+                mutate_at(vars(rowname), function(x) x - 1L) %>%
+                group_by(str.value) %>%
+                filter(rowname == min(rowname)) %>%
+                ungroup() %>%
+                rename(min.path.length.1 = rowname)
+        path_lengths_2 <- input_path_2 %>%
+                select(-value) %>%
+                tibble::rownames_to_column() %>%
+                filter(str.value %in% intersections$str.value) %>%
+                mutate_at(vars(rowname), as.integer) %>%
+                mutate_at(vars(rowname), function(x) x - 1L) %>%
+                group_by(str.value) %>%
+                filter(rowname == min(rowname)) %>%
+                ungroup() %>%
+                rename(min.path.length.2 = rowname)
+
+        intersections %>%
+                left_join(path_lengths_1, by = "str.value") %>%
+                left_join(path_lengths_2, by = "str.value") %>%
+                mutate(total.path.length = min.path.length.1 + min.path.length.2) %>%
+                select(str.value, total.path.length) %>%
+                filter(total.path.length == min(total.path.length)) %>%
+                pull(total.path.length) %>%
+                as.integer()
+
+}
