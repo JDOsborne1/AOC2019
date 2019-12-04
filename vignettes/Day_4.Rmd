@@ -1,0 +1,127 @@
+---
+title: "Day 4: Secure Container"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Day_4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(AOC2019)
+library(dplyr)
+```
+
+## Part 1
+### Context
+
+You arrive at the Venus fuel depot only to discover it's protected by a password. The Elves had written the password on a sticky note, but someone threw it out.
+
+However, they do remember a few key facts about the password:
+
+    It is a six-digit number.
+    The value is within the range given in your puzzle input.
+    Two adjacent digits are the same (like 22 in 122345).
+    Going from left to right, the digits never decrease; they only ever increase or stay the same (like 111123 or 135679).
+
+Other than the range rule, the following are true:
+
+    111111 meets these criteria (double 11, never decreases).
+    223450 does not meet these criteria (decreasing pair of digits 50).
+    123789 does not meet these criteria (no double).
+
+How many different passwords within the range given in your puzzle input meet these criteria?
+### Code
+
+```{r}
+
+
+test_sequence <- c(1,1,1,1,1,1)
+test_sequence2 <- c(1,1,1,2,1,2)
+
+as.integer(test_sequence[0] - 1)
+
+test_sequence2 %>% 
+  day4CheckSequenceMonotonicity() 
+test_sequence2 %>% 
+  day4CheckSequenceLength() 
+test_sequence2 %>% 
+  day4CheckSequenceRange(0, 1000000) 
+test_sequence2 %>% 
+  day4CheckSequenceDouble() 
+
+
+test_set_of_sequences <- tibble::tribble(~sequence,
+                                         "111111",
+                                         "112112",
+                                         "123456",
+                                         "23",
+                                         "224421"                                         )
+
+test_set_of_checks <- test_set_of_sequences %>% 
+  mutate(
+    vector_of_values = purrr::map(sequence, day4VectorSplitSequence)
+    ) %>% 
+  mutate(
+    Check.Monotonicity = purrr::map(vector_of_values, day4CheckSequenceMonotonicity)
+    ) %>% 
+  mutate(
+    Check.Length = purrr::map(vector_of_values, day4CheckSequenceLength)
+    ) %>% 
+  mutate(
+    Check.Range = purrr::map(vector_of_values, day4CheckSequenceRange, min_val = 0, max_val = 1000000)
+    ) %>% 
+  mutate(
+    Check.Double = purrr::map(vector_of_values, day4CheckSequenceDouble)
+    ) %>% 
+  select(
+    -vector_of_values
+    ) %>% 
+  tidyr::unnest(
+    cols = c(Check.Monotonicity, Check.Length, Check.Range, Check.Double)
+    ) 
+
+
+test_set_of_checks%>%
+  group_by(sequence) %>% 
+  summarise(Check.Pass = all(Check.Monotonicity, Check.Length, Check.Range, Check.Double))
+  
+
+
+test_set_of_checks2 <- test_set_of_sequences %>% 
+  mutate(vector_to_check = purrr::map(sequence, day4VectorSplitSequence)) %>% 
+  mutate(
+    Check.Pass = purrr::map(vector_to_check, day4CheckSequence, min_val = 0, max_val = 1000000)
+    )
+
+root_table <- tibble(num_1 = 1:10)
+
+aug_table <- tibble(num_2 = 1:10)
+
+library(fuzzyjoin)
+
+upper_bound <- 191919
+lower_bound <- 100000
+
+
+tibble(num_1 = 1:9) %>% 
+  fuzzy_inner_join(tibble(num_2 = 1:9), by = c("num_1" = "num_2"), match_fun = `<=`) %>% 
+  fuzzy_inner_join(tibble(num_3 = 1:9), by = c("num_2" = "num_3"), match_fun = `<=`) %>% 
+  fuzzy_inner_join(tibble(num_4 = 1:9), by = c("num_3" = "num_4"), match_fun = `<=`) %>% 
+  fuzzy_inner_join(tibble(num_5 = 1:9), by = c("num_4" = "num_5"), match_fun = `<=`) %>% 
+  fuzzy_inner_join(tibble(num_6 = 1:9), by = c("num_5" = "num_6"), match_fun = `<=`) %>% 
+  mutate_all(as.character) %>% 
+  mutate(combo = paste0(num_1, num_2, num_3, num_4, num_5, num_6)) %>% 
+  mutate(combo_val = as.integer(combo)) %>% 
+  filter(combo_val >= lower_bound, combo_val <= upper_bound) %>% 
+  select(combo)
+
+```
+
