@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(AOC2019)
 library(dplyr)
+library(fuzzyjoin)
 ```
 
 ## Part 1
@@ -43,56 +44,56 @@ How many different passwords within the range given in your puzzle input meet th
 ```{r}
 
 
-test_sequence <- c(1,1,1,1,1,1)
-test_sequence2 <- c(1,1,1,2,1,2)
-
-as.integer(test_sequence[0] - 1)
-
-test_sequence2 %>% 
-  day4CheckSequenceMonotonicity() 
-test_sequence2 %>% 
-  day4CheckSequenceLength() 
-test_sequence2 %>% 
-  day4CheckSequenceRange(0, 1000000) 
-test_sequence2 %>% 
-  day4CheckSequenceDouble() 
-
-
+# test_sequence <- c(1,1,1,1,1,1)
+# test_sequence2 <- c(1,1,1,2,1,2)
+# 
+# as.integer(test_sequence[0] - 1)
+# 
+# test_sequence2 %>% 
+#   day4CheckSequenceMonotonicity() 
+# test_sequence2 %>% 
+#   day4CheckSequenceLength() 
+# test_sequence2 %>% 
+#   day4CheckSequenceRange(0, 1000000) 
+# test_sequence2 %>% 
+#   day4CheckSequenceDouble() 
+# 
+# 
 test_set_of_sequences <- tibble::tribble(~sequence,
                                          "111111",
                                          "112112",
                                          "123456",
                                          "23",
                                          "224421"                                         )
-
-test_set_of_checks <- test_set_of_sequences %>% 
-  mutate(
-    vector_of_values = purrr::map(sequence, day4VectorSplitSequence)
-    ) %>% 
-  mutate(
-    Check.Monotonicity = purrr::map(vector_of_values, day4CheckSequenceMonotonicity)
-    ) %>% 
-  mutate(
-    Check.Length = purrr::map(vector_of_values, day4CheckSequenceLength)
-    ) %>% 
-  mutate(
-    Check.Range = purrr::map(vector_of_values, day4CheckSequenceRange, min_val = 0, max_val = 1000000)
-    ) %>% 
-  mutate(
-    Check.Double = purrr::map(vector_of_values, day4CheckSequenceDouble)
-    ) %>% 
-  select(
-    -vector_of_values
-    ) %>% 
-  tidyr::unnest(
-    cols = c(Check.Monotonicity, Check.Length, Check.Range, Check.Double)
-    ) 
-
-
-test_set_of_checks%>%
-  group_by(sequence) %>% 
-  summarise(Check.Pass = all(Check.Monotonicity, Check.Length, Check.Range, Check.Double))
-  
+# 
+# test_set_of_checks <- test_set_of_sequences %>% 
+#   mutate(
+#     vector_of_values = purrr::map(sequence, day4VectorSplitSequence)
+#     ) %>% 
+#   mutate(
+#     Check.Monotonicity = purrr::map(vector_of_values, day4CheckSequenceMonotonicity)
+#     ) %>% 
+#   mutate(
+#     Check.Length = purrr::map(vector_of_values, day4CheckSequenceLength)
+#     ) %>% 
+#   mutate(
+#     Check.Range = purrr::map(vector_of_values, day4CheckSequenceRange, min_val = 0, max_val = 1000000)
+#     ) %>% 
+#   mutate(
+#     Check.Double = purrr::map(vector_of_values, day4CheckSequenceDouble)
+#     ) %>% 
+#   select(
+#     -vector_of_values
+#     ) %>% 
+#   tidyr::unnest(
+#     cols = c(Check.Monotonicity, Check.Length, Check.Range, Check.Double)
+#     ) 
+# 
+# 
+# test_set_of_checks%>%
+#   group_by(sequence) %>% 
+#   summarise(Check.Pass = all(Check.Monotonicity, Check.Length, Check.Range, Check.Double))
+#   
 
 
 test_set_of_checks2 <- test_set_of_sequences %>% 
@@ -101,17 +102,10 @@ test_set_of_checks2 <- test_set_of_sequences %>%
     Check.Pass = purrr::map(vector_to_check, day4CheckSequence, min_val = 0, max_val = 1000000)
     )
 
-root_table <- tibble(num_1 = 1:10)
+upper_bound <- 784956
+lower_bound <- 240298
 
-aug_table <- tibble(num_2 = 1:10)
-
-library(fuzzyjoin)
-
-upper_bound <- 191919
-lower_bound <- 100000
-
-
-tibble(num_1 = 1:9) %>% 
+combos <- tibble(num_1 = 1:9) %>% 
   fuzzy_inner_join(tibble(num_2 = 1:9), by = c("num_1" = "num_2"), match_fun = `<=`) %>% 
   fuzzy_inner_join(tibble(num_3 = 1:9), by = c("num_2" = "num_3"), match_fun = `<=`) %>% 
   fuzzy_inner_join(tibble(num_4 = 1:9), by = c("num_3" = "num_4"), match_fun = `<=`) %>% 
@@ -122,6 +116,16 @@ tibble(num_1 = 1:9) %>%
   mutate(combo_val = as.integer(combo)) %>% 
   filter(combo_val >= lower_bound, combo_val <= upper_bound) %>% 
   select(combo)
+
+combo_set <- combos %>% 
+    mutate(vector_to_check = purrr::map(combo, day4VectorSplitSequence)) %>% 
+  mutate(
+    Check.Pass = purrr::map(vector_to_check, day4CheckSequence, min_val = 0, max_val = 1000000)
+    ) %>% 
+  select(-vector_to_check) %>% 
+  tidyr::unnest()
+
+combo_set %>% count(Check.Pass)
 
 ```
 
