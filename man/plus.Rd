@@ -11,6 +11,9 @@ plus(x, y)
 
 \item{y}{RHS}
 }
+\value{
+
+}
 \description{
 Written wrapper around `+`
 }
