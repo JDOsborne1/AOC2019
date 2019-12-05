@@ -16,7 +16,7 @@ Suggests:
     rmarkdown,
     covr
 VignetteBuilder: knitr
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2
 Imports: 
     dplyr,
     tidyr,

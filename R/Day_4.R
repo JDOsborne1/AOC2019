@@ -93,7 +93,7 @@ day4VectorSplitSequence <- function(sequence) {
 #' @export
 #'
 #' @examples
-day4CheckSequence <- function(vector_split_sequence, min_val, max_val){
+day4CheckSequence <- function(vector_split_sequence, min_val, max_val, part2 = FALSE){
         all(
                 day4CheckSequenceDouble(vector_split_sequence)
                 ,
@@ -102,5 +102,31 @@ day4CheckSequence <- function(vector_split_sequence, min_val, max_val){
                 day4CheckSequenceMonotonicity(vector_split_sequence)
                 ,
                 day4CheckSequenceRange(vector_split_sequence, min_val = min_val, max_val = max_val)
-        )
+                ,
+                ifelse(part2, day4CheckOneDouble(vector_split_sequence), TRUE)
+                )
+}
+
+
+# Part 2 checker ----------------------------------------------------------
+
+#' Check for a double which isnt part of a triple or larger
+#'
+#' @param vector_of_values the vector to be checked
+#'
+#' @return
+#' @export
+#'
+#' @examples
+day4CheckOneDouble <- function(vector_of_values){
+        tibble::enframe(vector_of_values, name = NULL) %>%
+                mutate(
+                        shift = lag(value)
+                        , shift2 = lag(value, 2)
+                        , pass1 = value == shift
+                        , pass2 = value == shift & value != shift2
+                ) %>%
+                pull(pass2) %>%
+                tidyr::replace_na(FALSE) %>%
+                any()
 }

@@ -4,7 +4,6 @@
 \name{AOC2019}
 \alias{AOC2019}
 \alias{Advent-Of-Code-2019}
-\alias{AOC2019-package}
 \title{Advent of Code Challenge 2019 Code Store}
 \description{
 This package contains functions, test, context and datasets for the AOC challenge 2019
