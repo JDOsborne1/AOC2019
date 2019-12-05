@@ -139,7 +139,7 @@ combo_set %>% count(Check.Pass)
 
 
 
-combo_set <- combos %>% 
+combo_set2 <- combos %>% 
     mutate(vector_to_check = purrr::map(combo, day4VectorSplitSequence)) %>% 
   mutate(
     Check.Pass = purrr::map(vector_to_check, day4CheckSequence, min_val = 0, max_val = 1000000, part2 = TRUE)
@@ -147,6 +147,10 @@ combo_set <- combos %>%
   select(-vector_to_check) %>% 
   tidyr::unnest()
 
-combo_set %>% count(Check.Pass)
+View(combo_set2 %>% filter(!Check.Pass))
+
+combo_set2 %>% count(Check.Pass)
 ```
+
+
 

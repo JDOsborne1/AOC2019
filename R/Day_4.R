@@ -121,12 +121,15 @@ day4CheckSequence <- function(vector_split_sequence, min_val, max_val, part2 = F
 day4CheckOneDouble <- function(vector_of_values){
         tibble::enframe(vector_of_values, name = NULL) %>%
                 mutate(
-                        shift = lag(value)
-                        , shift2 = lag(value, 2)
-                        , pass1 = value == shift
-                        , pass2 = value == shift & value != shift2
+                        shift.up = lag(value)
+                        , shift.up2 = lag(value, 2)
+                        , shift.down = lead(value)
+                        , shift.down2 = lead(value, 2)
+                        , pass1 = value == shift.up | value == shift.down
+                        , pass2 = pass1 & (value != shift.up2 | is.na(shift.up2))
+                        , pass3 = pass2 & (value != shift.down | is.na(shift.down))
                 ) %>%
-                pull(pass2) %>%
+                pull(pass3) %>%
                 tidyr::replace_na(FALSE) %>%
                 any()
 }
