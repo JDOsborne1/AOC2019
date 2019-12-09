@@ -36,7 +36,7 @@ day5OpcodeInterpreter <- function(parameterised_opcode){
 
         output_vals <- list()
         output_vals$op_code <- op_code
-        output_vals$opcode_parameters <- opcode_parameters
+        output_vals$opcode_parameters <- rev(opcode_parameters)
         output_vals$full_opcode_vector <- full_opcode_vector
         output_vals
 }
@@ -80,6 +80,8 @@ day5IntcodeCalculator <- function(intcode, input = "NiL"){
 
                 movement <- as.integer(movement_lookup[interpreted_op_code$op_code])
 
+                print(glue::glue("Operation is: {glue::glue_collapse(intcode[op_locale:(op_locale+movement)], sep = ', ')}"))
+
                 if(interpreted_op_code$op_code == "01"){
                         # Addition
                         intcode[intcode[op_locale+3]+1]  <- day5IntcodeExtractor(
@@ -119,9 +121,9 @@ day5IntcodeCalculator <- function(intcode, input = "NiL"){
                         )
 
                         if(output_var != 0) {
-                                print(op_locale)
-                                print(intcode)
-                                stop("non zero exit")
+
+                                #print(intcode)
+                                stop("non zero exit at: {op_locale}")
                                 }
 
                         print(output_var)
