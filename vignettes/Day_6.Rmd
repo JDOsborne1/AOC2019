@@ -82,23 +82,8 @@ library(ggraph)
 ```
 
 ```{r defining test case}
-edges_raw <-  tibble(raw.edges = c(
-"COM)B"
-, "B)C"
-, "C)D"
-, "D)E"
-, "E)F"
-, "B)G"
-, "G)H"
-, "D)I"
-, "E)J"
-, "J)K"
-, "K)L"
-)
-)
-
-edges_refined <- edges_raw %>% 
-  separate(raw.edges, into = c("origin", "orbital"), sep = "\\)")
+edges_refined <- orbit_input %>% 
+  separate(Orbits, into = c("origin", "orbital"), sep = "\\)")
 
 node_list <- tibble(label = edges_refined %>% unlist() %>% unique()) %>% 
   rownames_to_column(var = "id")
@@ -121,7 +106,7 @@ orbits_network_igraph_tidy <- as_tbl_graph(orbits_network_igraph)
 ggraph(orbits_network_igraph_tidy) +
   geom_node_point() +
   geom_edge_link(alpha = 0.8) +
-  geom_node_text(aes(label = label), repel = TRUE) +
+  #geom_node_text(aes(label = label), repel = TRUE) +
   theme_graph()
 
 visNetwork::visNetwork(nodes = node_list, edges = edges_reduced) %>% 
@@ -130,9 +115,13 @@ visNetwork::visNetwork(nodes = node_list, edges = edges_reduced) %>%
 
 
 ```{r}
+COM_location <- orbits_network_igraph_tidy %>% 
+  filter(label == "COM") %>% 
+  pull(name) %>% 
+  as.integer()
+
 orbits_network_igraph_tidy %>% 
-  mutate(dist_to_COM = node_distance_from(1)) %>% 
+  mutate(dist_to_COM = node_distance_from(COM_location)) %>% 
   mutate(total_dist = sum(dist_to_COM))
-tidygraph::node_distance_to(node_list)
 ```
 
