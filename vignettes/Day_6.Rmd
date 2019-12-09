@@ -14,9 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(AOC2019)
-```
+
 
 ## Part 1
 ### Context
@@ -72,8 +70,69 @@ The total number of direct and indirect orbits in this example is 42.
 What is the total number of direct and indirect orbits in your map data?
 
 ### Code
+```{r setup}
+library(AOC2019)
+library(dplyr)
+library(tibble)
+library(tidyr)
+#Library(network)
+library(igraph)
+library(tidygraph)
+library(ggraph)
+```
+
+```{r defining test case}
+edges_raw <-  tibble(raw.edges = c(
+"COM)B"
+, "B)C"
+, "C)D"
+, "D)E"
+, "E)F"
+, "B)G"
+, "G)H"
+, "D)I"
+, "E)J"
+, "J)K"
+, "K)L"
+)
+)
+
+edges_refined <- edges_raw %>% 
+  separate(raw.edges, into = c("origin", "orbital"), sep = "\\)")
+
+node_list <- tibble(label = edges_refined %>% unlist() %>% unique()) %>% 
+  rownames_to_column(var = "id")
+
+edges_reduced <- edges_refined %>% 
+  left_join(rename(node_list, from = id), by = c("origin" = "label")) %>% 
+  left_join(rename(node_list, to = id), by = c("orbital" = "label")) %>% 
+  select(from, to) %>% 
+  mutate(weight = 1)
+
+#orbits_network <- network(edges_reduced, vetex.attr = node_list, ignore.eval = FALSE, directed = TRUE)
+
+#plot(orbits_network, vertex.cex = 3, mode = "circle")
+
+orbits_network_igraph <- graph_from_data_frame(d = edges_reduced, vertices = node_list, directed = TRUE)
+
+
+orbits_network_igraph_tidy <- as_tbl_graph(orbits_network_igraph)
+
+ggraph(orbits_network_igraph_tidy) +
+  geom_node_point() +
+  geom_edge_link(alpha = 0.8) +
+  geom_node_text(aes(label = label), repel = TRUE) +
+  theme_graph()
+
+visNetwork::visNetwork(nodes = node_list, edges = edges_reduced) %>% 
+  visNetwork::visEdges(arrows = "middle")
+```
+
 
 ```{r}
-
+orbits_network_igraph_tidy %>% 
+  mutate(dist_to_COM = node_distance_from(1)) %>% 
+  mutate(total_dist = sum(dist_to_COM))
+tidygraph::node_distance_to(node_list)
 ```
 
