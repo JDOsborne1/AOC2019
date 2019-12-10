@@ -39,4 +39,41 @@ The image you received is 25 pixels wide and 6 pixels tall.
 
 To make sure the image wasn't corrupted during transmission, the Elves would like you to find the layer that contains the fewest 0 digits. On that layer, what is the number of 1 digits multiplied by the number of 2 digits?
 
+### Code
+```{r setup}
+library(AOC2019)
+library(tibble)
+library(dplyr)
+library(purrr)
+library(tidyr)
+```
+
+
+```{r}
+
+
+width <- 25
+height <- 6
+
+split_input <- img_string %>% stringr::str_split("") %>% unlist
+
+image_store <- list()
+
+img_area <- width*height
+for (i in 1:(length(split_input)/img_area)){
+  start <- 1 + ((i-1)*img_area)
+  end <-  (i*img_area)
+  image_store <- append(image_store, list(matrix(split_input[start:end], nrow = height, ncol = width)))
+}
+
+tibble(matrix_dat = image_store) %>% 
+  mutate(no.of.zero = map(matrix_dat, function(x) sum(x == "0"))) %>% 
+  mutate(score = map(matrix_dat, function(x) sum(x == "1") * sum(x == "2"))) %>% 
+  select(-matrix_dat) %>% 
+  unnest(cols = c(no.of.zero, score)) %>% 
+  mutate_all(as.integer) %>% 
+  filter(no.of.zero == min(no.of.zero)) %>% 
+  pull(score)
+
+```
 
