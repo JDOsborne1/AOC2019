@@ -9,9 +9,6 @@ day3GetPathFromString(input_string)
 \arguments{
 \item{input_string}{the input string}
 }
-\value{
-
-}
 \description{
 Generate the path from the string
 }

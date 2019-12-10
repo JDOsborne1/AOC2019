@@ -11,9 +11,6 @@ day3DetermineShortestPath(input_string_1, input_string_2)
 
 \item{input_string_2}{the second instruction string}
 }
-\value{
-
-}
 \description{
 Determine the crossing points of two instruction strings
 }

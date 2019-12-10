@@ -13,9 +13,6 @@ day4CheckSequenceRange(a_vector_of_values, min_val, max_val)
 
 \item{max_val}{the upper bound}
 }
-\value{
-
-}
 \description{
 Sequence Range checker
 }

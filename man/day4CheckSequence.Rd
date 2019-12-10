@@ -13,9 +13,6 @@ day4CheckSequence(vector_split_sequence, min_val, max_val, part2 = FALSE)
 
 \item{max_val}{the upper bound}
 }
-\value{
-
-}
 \description{
 Sequence checker
 }
