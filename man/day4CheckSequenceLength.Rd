@@ -11,9 +11,6 @@ day4CheckSequenceLength(a_vector_of_values, required_length = 6)
 
 \item{required_length}{the Length required, defaults to 6}
 }
-\value{
-
-}
 \description{
 Check sequence length
 }

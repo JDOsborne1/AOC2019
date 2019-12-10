@@ -11,9 +11,6 @@ day3GeneratePathFromMoveTransform(list_of_transforms, init = c(0, 0))
 
 \item{init}{the starting coords, defaults to c(0,0)}
 }
-\value{
-
-}
 \description{
 Generate tibble path from set of transforms
 }

@@ -11,9 +11,6 @@ day3ManhattanDistance(vect_target, vect_reference = c(0, 0))
 
 \item{vect_reference}{the origin vector, assumed to be c(0,0)}
 }
-\value{
-
-}
 \description{
 Manhattan Distance between two vectors
 }

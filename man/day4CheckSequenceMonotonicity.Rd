@@ -9,9 +9,6 @@ day4CheckSequenceMonotonicity(a_vector_of_values)
 \arguments{
 \item{a_vector_of_values}{the Vector to check}
 }
-\value{
-
-}
 \description{
 Monotonicity Check
 }

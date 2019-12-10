@@ -9,9 +9,6 @@ day4CheckOneDouble(vector_of_values)
 \arguments{
 \item{vector_of_values}{the vector to be checked}
 }
-\value{
-
-}
 \description{
 Check for a double which isnt part of a triple or larger
 }

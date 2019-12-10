@@ -9,9 +9,6 @@ day3ListOfMoveCodesToListOfTransforms(list_of_move_codes)
 \arguments{
 \item{list_of_move_codes}{the list of move codes}
 }
-\value{
-
-}
 \description{
 Move code to transform: List Edition
 }
