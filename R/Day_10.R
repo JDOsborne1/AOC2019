@@ -1,3 +1,11 @@
+#' Input Parser for Day 10 of the AOC Challenge
+#'
+#' @param input_chars the input character
+#'
+#' @return
+#' @export
+#'
+#' @examples
 day10InputParser <- function(input_chars){
 
         input_chars_parsed <- input_chars%>%
@@ -15,12 +23,40 @@ day10InputParser <- function(input_chars){
 }
 
 
+#' Vector Length Calculator
+#'
+#' @param vect the vector in question
+#'
+#' @return
+#' @export
+#'
+#' @examples
 day10LengthCalc <- function(vect){
         sqrt(sum(vect * vect)) * sign(vect[1])
 }
+
+
+
+#' Vector Magnitude Calculator
+#'
+#' @param vect the vector in question
+#'
+#' @return
+#' @export
+#'
+#' @examples
 day10MagnitudeCalc <- function(vect){
         sqrt(sum(vect * vect))
 }
+#' Asteroid View Count
+#'
+#' @param current_coord the coordinate to "look" from
+#' @param asteroid_list the list of possible asteroids to see
+#'
+#' @return
+#' @export
+#'
+#' @examples
 day10AsteroidViewCount <- function(current_coord, asteroid_list){
         asteroid_list %>%
                 mutate(diffs = map(coords, function(x) x - current_coord)) %>%

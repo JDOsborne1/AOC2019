@@ -9,6 +9,9 @@ day1MassToFuelConverter(mass_val)
 \arguments{
 \item{mass_val}{the value of the mass to be converted to fuel}
 }
+\value{
+
+}
 \description{
 Mass to fuel conversion function
 }

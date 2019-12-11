@@ -9,6 +9,9 @@ day4CheckSequenceDouble(a_vector_of_values)
 \arguments{
 \item{a_vector_of_values}{The vector to check}
 }
+\value{
+
+}
 \description{
 Check the presence of double numbers
 }

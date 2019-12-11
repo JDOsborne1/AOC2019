@@ -9,6 +9,9 @@ day3MoveCodeToCoords(move_code)
 \arguments{
 \item{move_code}{the move code to transform of the format "[a-zA-Z]\d*"}
 }
+\value{
+
+}
 \description{
 Move codes to Coord
 }

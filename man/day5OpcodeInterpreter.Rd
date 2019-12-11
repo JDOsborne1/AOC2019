@@ -9,6 +9,9 @@ day5OpcodeInterpreter(parameterised_opcode)
 \arguments{
 \item{parameterised_opcode}{}
 }
+\value{
+
+}
 \description{
 Title
 }

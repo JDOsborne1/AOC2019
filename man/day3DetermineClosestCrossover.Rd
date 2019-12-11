@@ -4,8 +4,11 @@
 \alias{day3DetermineClosestCrossover}
 \title{Determine the closest crossover}
 \usage{
-day3DetermineClosestCrossover(input_string1, input_string2,
-  vect_reference = c(0, 0))
+day3DetermineClosestCrossover(
+  input_string1,
+  input_string2,
+  vect_reference = c(0, 0)
+)
 }
 \arguments{
 \item{input_string1}{the first input string}
@@ -13,6 +16,9 @@ day3DetermineClosestCrossover(input_string1, input_string2,
 \item{input_string2}{the second input string}
 
 \item{vect_reference}{the point of origin}
+}
+\value{
+
 }
 \description{
 Determine the closest crossover

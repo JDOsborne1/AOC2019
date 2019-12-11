@@ -9,6 +9,9 @@ day5IntcodeExtractor(intcode, position, mode = "0")
 \arguments{
 \item{mode}{}
 }
+\value{
+
+}
 \description{
 Title
 }

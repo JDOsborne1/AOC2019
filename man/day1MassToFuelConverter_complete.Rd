@@ -9,6 +9,9 @@ day1MassToFuelConverter_complete(mass_value)
 \arguments{
 \item{mass_value}{the value of the mass to be converted to fuel recursively}
 }
+\value{
+
+}
 \description{
 Recursive Mass to Fuel conversion function
 }

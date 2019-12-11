@@ -9,6 +9,9 @@ day5IntcodeCalculator(intcode, input = "NiL")
 \arguments{
 \item{intcode}{}
 }
+\value{
+
+}
 \description{
 Title
 }
