@@ -66,14 +66,112 @@ for (i in 1:(length(split_input)/img_area)){
   image_store <- append(image_store, list(matrix(split_input[start:end], nrow = height, ncol = width)))
 }
 
-tibble(matrix_dat = image_store) %>% 
+nested_scores <- tibble(matrix_dat = image_store) %>% 
   mutate(no.of.zero = map(matrix_dat, function(x) sum(x == "0"))) %>% 
-  mutate(score = map(matrix_dat, function(x) sum(x == "1") * sum(x == "2"))) %>% 
+  mutate(score = map(matrix_dat, function(x) sum(x == "1") * sum(x == "2"))) 
+
+nested_scores %>% 
   select(-matrix_dat) %>% 
   unnest(cols = c(no.of.zero, score)) %>% 
   mutate_all(as.integer) %>% 
   filter(no.of.zero == min(no.of.zero)) %>% 
   pull(score)
+
+```
+
+## Part 2
+### Context
+
+Now you're ready to decode the image. The image is rendered by stacking the layers and aligning the pixels with the same positions in each layer. The digits indicate the color of the corresponding pixel: 0 is black, 1 is white, and 2 is transparent.
+
+The layers are rendered with the first layer in front and the last layer in back. So, if a given position has a transparent pixel in the first and second layers, a black pixel in the third layer, and a white pixel in the fourth layer, the final image would have a black pixel at that position.
+
+For example, given an image 2 pixels wide and 2 pixels tall, the image data 0222112222120000 corresponds to the following image layers:
+
+Layer 1: 02
+         22
+
+Layer 2: 11
+         22
+
+Layer 3: 22
+         12
+
+Layer 4: 00
+         00
+Then, the full image can be found by determining the top visible pixel in each position:
+
+The top-left pixel is black because the top layer is 0.
+The top-right pixel is white because the top layer is 2 (transparent), but the second layer is 1.
+The bottom-left pixel is white because the top two layers are 2, but the third layer is 1.
+The bottom-right pixel is black because the only visible pixel in that position is 0 (from layer 4).
+So, the final image looks like this:
+
+01
+10
+What message is produced after decoding your image?
+
+### Code
+
+```{r}
+
+day8LayerCompare <- function(lower_layer,upper_layer){
+  output <- upper_layer
+  
+  check_matrix <- upper_layer == "2"
+  #check_matrix <- as.integer(upper_layer) > as.integer(lower_layer)
+  
+  output[check_matrix] <- lower_layer[check_matrix]
+  
+  output
+  }
+```
+
+```{r}
+test_input <- tibble(matrix_dat = list(
+  matrix(c("0", "2", "2", "2"), nrow = 2)
+  ,
+  matrix(c("1", "2", "1", "2"), nrow = 2)
+  ,
+  matrix(c("2", "1", "2", "2"), nrow = 2)
+  ,
+  matrix(c("0", "0", "0", "0"), nrow = 2)
+  ))
+
+
+test_input %>% pull(matrix_dat) %>% reduce(day8LayerCompare) 
+
+```
+
+```{r}
+
+
+
+output <- nested_scores %>% 
+  pull(matrix_dat) %>%  
+  reduce(day8LayerCompare)
+
+output[output == "0"] <- " "
+output[output == "1"] <- "*"
+output[output == "2"] <- " "
+
+apply(output, 1 ,glue::glue_collapse) %>% glue::glue_collapse(sep = "\n")
+```
+```{r}
+nested_scores %>% pull(matrix_dat) %>%  {.[[3]]} -> v1
+nested_scores %>% pull(matrix_dat) %>%  {.[[4]]} -> v2
+
+test_out <- v1
+emph <- day8LayerCompare(v1, v2) != v2
+ test_out[emph] <- paste0("!", v1[emph])
+
+print("old")
+v1 
+print("underlying")
+v2
+print("new")
+test_out
+
 
 ```
 
